@@ -1,0 +1,12 @@
+SFT/unsloth_compiled_cache/*
+unsloth_training_checkpoints/*
+unsloth_training_logs/*
+unsloth_training_results/*
+*.pyc
+unsloth_compiled_cache/*
+.vscode
+
+
+SFT/gemma_3_4B_QLORA/output/*
+SFT/llama_3.2_1B_QLORA/output/*
+SFT/gemma_3_4B_QLORA/trainer_output/*

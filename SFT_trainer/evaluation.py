@@ -1,0 +1,134 @@
+from dataset_handler import DatasetHandler
+from unsloth import FastLanguageModel
+import evaluate
+from transformers import TextStreamer
+from simplification.SARI import SARIsent
+
+class Evaluation:
+    def __init__(self, model, tokenizer, dataset_handler):
+        self.model = model
+        self.tokenizer = tokenizer
+        self.dataset_handler = dataset_handler
+        FastLanguageModel.for_inference(self.model) # Enable native 2x faster inference
+        self.text_streamer = TextStreamer(self.tokenizer)
+
+
+    def simplyfy_text(self, example):
+        """
+        Simplify the input text using the model.
+        
+        Args:
+            text (str): The input text to be simplified.
+        
+        Returns:
+            str: The simplified text.
+        """
+    
+        prompt  = "{}"
+        inputs = self.tokenizer([prompt.format(example['prompt']),], return_tensors="pt").to(self.model.device)
+        input_ids = inputs["input_ids"]
+        input_length = input_ids.shape[1]
+        simplified_text = self.model.generate(**inputs, max_new_tokens = 8192, eos_token_id=self.tokenizer.eos_token_id)
+        simplified_text = simplified_text[:, input_length:]
+        simplified_text = self.tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
+        print(f"Simplified Text: {simplified_text}")
+        return {"prediction": simplified_text}
+    
+    def evaluate(self, dataset):
+        """
+        Evaluate the model on the given dataset.
+        
+        Args:
+            dataset: The dataset to evaluate the model on.
+        
+        Returns:
+            dict: The evaluation results.
+        """
+        # Preprocess the dataset
+        dataset = dataset.map(self.simplyfy_text)
+        
+        return dataset
+    
+
+    def get_bert_score(self, eval_dataset):
+        """
+        Calculate the BERT score for the evaluation dataset.
+        
+        Args:
+            eval_dataset: The evaluation dataset.
+        
+        Returns:
+            dict: The BERT score results.
+        """
+        # Load the BERT scorer
+        bert_scorer = evaluate.load("bertscore", model_type="bert-base-uncased")
+        
+        precisions = []
+        recalls = []
+        f1s = []
+        for example in eval_dataset:
+            # Get the reference and prediction texts
+            reference = example["simplified_text"]
+            prediction = example["prediction"]
+            if prediction == "":
+                continue
+            # Calculate the BERT score
+            results = bert_scorer.compute(predictions=[prediction], references=[reference], lang="en")
+            
+            precisions.append(results["precision"][0])
+            recalls.append(results["recall"][0])
+            f1s.append(results["f1"][0])
+        # Calculate the average scores
+        avg_precision = sum(precisions) / len(precisions)
+        avg_recall = sum(recalls) / len(recalls)
+        avg_f1 = sum(f1s) / len(f1s)
+        return {
+            "average_precision": avg_precision,
+            "average_recall": avg_recall,
+            "average_f1": avg_f1
+        }
+    
+    def get_rouge_score(self, eval_dataset):
+        """
+        Calculate the ROUGE score for the evaluation dataset.
+        Args:
+            eval_dataset: The evaluation dataset.
+        Returns:
+            dict: The ROUGE score results.
+        """ 
+        # Load the ROUGE scorer
+        rouge_scorer = evaluate.load("rouge")
+        
+        predictions = []
+        references = []
+        for example in eval_dataset:
+            # Get the reference and prediction texts
+            reference = example["simplified_text"]
+            prediction = example["prediction"]
+            if prediction == "":
+                continue
+            
+            predictions.append(prediction)
+            references.append(reference)
+
+        # Calculate the ROUGE score
+        results = rouge_scorer.compute(predictions=predictions, references=references)
+        return results
+    
+
+    def get_sari_score(self, eval_dataset):
+        scores = []
+        for example in eval_dataset:
+            # Get the reference and prediction texts
+            reference = example["simplified_text"]
+            prediction = example["prediction"]
+            if prediction == "":
+                continue
+            legal_text = example["legal_text"]
+            results = SARIsent(legal_text, prediction, reference)
+            scores.append(results)
+        avg_sari = sum(scores) / len(scores)
+        return {
+            "average_sari": avg_sari
+        }
+   

@@ -18,6 +18,8 @@ RUN pip3 install --upgrade pip
 RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu118
 RUN pip3 install transformers datasets accelerate
 RUN pip3 install unsloth
+RUN pip3 install evaluate bert_score sacremoses sacrebleu rouge_score
+
 
 # Set the working directory
 WORKDIR /workspace

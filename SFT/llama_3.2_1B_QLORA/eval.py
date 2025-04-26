@@ -123,6 +123,9 @@ def make_prompt(example):
 def main():
 
     model_dir = "SFT/llama_3.2_1B_QLORA"
+    #create eval folder
+    if not os.path.exists(f"{model_dir}/evaluation"):
+        os.makedirs(f"{model_dir}/evaluation")
     config = Config(
         model_name="unsloth/Llama-3.2-1B-Instruct-bnb-4bit",
         dataset_path="dataset/train_data.csv",
@@ -184,11 +187,11 @@ def main():
         # Evaluate the model
         eval_dataset = evaluation.evaluate(eval_dataset)
         # Save the evaluation results
-        eval_dataset.save_to_disk(f"{model_dir}/output/eval_dataset_{args.eval_type}_{args.shots}_shots")
+        eval_dataset.save_to_disk(f"{model_dir}/evaluation/eval_dataset_{args.eval_type}_{args.shots}_shots")
 
 
     # Load the evaluation dataset
-    eval_dataset = load_from_disk(f"{model_dir}/output/eval_dataset_{args.eval_type}_{args.shots}_shots")
+    eval_dataset = load_from_disk(f"{model_dir}/evaluation/eval_dataset_{args.eval_type}_{args.shots}_shots")
     evaluation = Evaluation(None, None, None)   
     
     # Get the BERT score
@@ -212,7 +215,7 @@ def main():
         "SARI Score": sari_score,
         "Hallucination Score": halucination_score,
     }
-    with open(f"{model_dir}/output/eval_results_{args.eval_type}_{args.shots}_shots.json", "w") as f:
+    with open(f"{model_dir}/evaluation/eval_results_{args.eval_type}_{args.shots}_shots.json", "w") as f:
         json.dump(json_save, f, indent=4)
 
 if __name__ == "__main__":

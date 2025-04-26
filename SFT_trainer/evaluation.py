@@ -3,6 +3,10 @@ from unsloth import FastLanguageModel
 import evaluate
 from transformers import TextStreamer
 from simplification.SARI import SARIsent
+from transformers import AutoModelForSequenceClassification
+from tqdm import tqdm   
+import torch
+import numpy as np
 
 class Evaluation:
     def __init__(self, model, tokenizer, dataset_handler):
@@ -131,4 +135,39 @@ class Evaluation:
         return {
             "average_sari": avg_sari
         }
+    
+
    
+    def get_halucination_score(self, eval_dataset):
+        """
+        Calculate the hallucination score for the evaluation dataset.
+        
+        Args:
+            eval_dataset: The evaluation dataset.
+        
+        Returns:
+            dict: The hallucination score results.
+        """
+        # Load the hallucination scorer
+        model = AutoModelForSequenceClassification.from_pretrained('vectara/hallucination_evaluation_model', trust_remote_code=True)
+        model.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
+        model.eval()
+        scores = []
+        for example in tqdm(eval_dataset):
+            # Get the reference and prediction texts
+            reference = example["simplified_text"]
+            prediction = example["prediction"]
+            if prediction == "":
+                continue
+
+            confidence = model.predict([(reference, prediction)])
+
+            scores.append(confidence.item())
+        avg_hallucination = sum(scores) / len(scores)
+        return {
+            "average_hallucination": float(avg_hallucination)
+        }           
+
+
+        
+    

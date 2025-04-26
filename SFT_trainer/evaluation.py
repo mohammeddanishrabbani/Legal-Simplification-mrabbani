@@ -2,7 +2,7 @@ from dataset_handler import DatasetHandler
 from unsloth import FastLanguageModel
 import evaluate
 from transformers import TextStreamer
-from simplification.SARI import SARIsent
+
 from transformers import AutoModelForSequenceClassification
 from tqdm import tqdm   
 import torch
@@ -13,7 +13,7 @@ class Evaluation:
         self.model = model
         self.tokenizer = tokenizer
         self.dataset_handler = dataset_handler
-        FastLanguageModel.for_inference(self.model) # Enable native 2x faster inference
+        
         self.text_streamer = TextStreamer(self.tokenizer)
 
 
@@ -35,7 +35,6 @@ class Evaluation:
         simplified_text = self.model.generate(**inputs, max_new_tokens = 8192, eos_token_id=self.tokenizer.eos_token_id)
         simplified_text = simplified_text[:, input_length:]
         simplified_text = self.tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
-        print(f"Simplified Text: {simplified_text}")
         return {"prediction": simplified_text}
     
     def evaluate(self, dataset):
@@ -49,6 +48,7 @@ class Evaluation:
             dict: The evaluation results.
         """
         # Preprocess the dataset
+        FastLanguageModel.for_inference(self.model) # Enable native 2x faster inference
         dataset = dataset.map(self.simplyfy_text)
         
         return dataset
@@ -121,16 +121,18 @@ class Evaluation:
     
 
     def get_sari_score(self, eval_dataset):
+        sari = evaluate.load("sari")
         scores = []
         for example in eval_dataset:
             # Get the reference and prediction texts
-            reference = example["simplified_text"]
+            reference = [example["simplified_text"]]
             prediction = example["prediction"]
             if prediction == "":
                 continue
             legal_text = example["legal_text"]
-            results = SARIsent(legal_text, prediction, reference)
-            scores.append(results)
+            # Calculate the SARI score
+            results = sari.compute(predictions=[prediction], references=[reference,], sources=[legal_text])
+            scores.append(results['sari'])
         avg_sari = sum(scores) / len(scores)
         return {
             "average_sari": avg_sari
@@ -165,7 +167,7 @@ class Evaluation:
             scores.append(confidence.item())
         avg_hallucination = sum(scores) / len(scores)
         return {
-            "average_hallucination": float(avg_hallucination)
+            "average_hallucination_score": float(avg_hallucination)
         }           
 
 

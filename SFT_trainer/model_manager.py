@@ -8,9 +8,9 @@ class ModelManager():
         self.tokenizer = tokenizer
         self.config = config
 
-    def save_model(self):
-        self.model.save_pretrained(f"{self.config.output_dir}/{self.config.model_name}")
-        self.tokenizer.save_pretrained(f"{self.config.output_dir}/{self.config.model_name}")
+    def save_model(self, suffix=""):
+        self.model.save_pretrained(f"{self.config.output_dir}/{self.config.model_name}_{suffix}")
+        self.tokenizer.save_pretrained(f"{self.config.output_dir}/{self.config.model_name}_{suffix}")
 
     def load_model(self, path=None):
         self.model.from_pretrained(path)

@@ -1,3 +1,4 @@
+import time
 from SFT_trainer.config import Config
 from SFT_trainer.dataset_handler import DatasetHandler
 from SFT_trainer.model_manager import ModelManager
@@ -8,18 +9,27 @@ import logging
 from unsloth.chat_templates import train_on_responses_only
 logging.basicConfig(level=logging.INFO)
 
+import os
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
+logging.basicConfig(filename=f'logs/{__file__}_{time.time()}.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
 
 
 def main():
     # Load the configuration
+    model_dir = "SFT/llama_3.2_1B_QLORA"
+    # checkpoint_dir = f"{model_dir}/checkpoint-528"
+    checkpoint_dir = None
     config = Config(
         model_name="unsloth/Llama-3.2-1B-Instruct-bnb-4bit",
-        dataset_path="dataset/merged_dataset.csv",
-        output_dir="SFT/llama_3.2_1B_QLORA/output",
+        dataset_path="dataset/train_data.csv",
+        output_dir=f"{model_dir}/output",
         dataset_split=0.2,
         chat_template="llama-3",
         dataset_text_field="text",
-        per_device_train_batch_size=1,
+        per_device_train_batch_size=8,
         gradient_accumulation_steps=4,
         warmup_steps=5,
         num_train_epochs=1,
@@ -47,6 +57,8 @@ def main():
     # full_finetuning = True, # [NEW!] We have full finetuning now!
     # token = "hf_...", # use one if using gated models
     )
+
+    model.save_pretrained(f"{model_dir}/output/unsloth/Llama-3.2-1B-Instruct-bnb-4bit")
     model = FastModel.get_peft_model(
     model,
     finetune_vision_layers     = False, # Turn off for just text!
@@ -65,8 +77,7 @@ def main():
     # # Load LoRA adapter weights
     # from peft import PeftModel
 
-    # checkpoint_dir = "trainer_output/checkpoint-528"
-    # # model = PeftModel.from_pretrained(model, checkpoint_dir)
+  
 
 
 
@@ -92,12 +103,15 @@ def main():
    
     # Train the model
     try:
-        trainer_instance.train()
+        if checkpoint_dir:
+            trainer_instance.train(resume_from_checkpoint=checkpoint_dir)
+        else:
+            trainer_instance.train()
     except Exception as e:
         logging.error(f"Training failed: {e}")
         trainer_instance._save_checkpoint(model,None)
     # Save the model
-    model_manager.save_model()
+    model_manager.save_model(suffix="final")
 
 
     

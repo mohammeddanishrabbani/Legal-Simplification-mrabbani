@@ -1,12 +1,12 @@
 # Use the official NVIDIA CUDA base image
-FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install necessary packages
 RUN apt-get update && apt-get install -y \
-    python3.8 \
+    python3.9 \
     python3-pip \
     git \
     && rm -rf /var/lib/apt/lists/*

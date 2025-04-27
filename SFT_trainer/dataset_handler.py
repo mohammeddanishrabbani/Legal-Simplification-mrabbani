@@ -44,7 +44,7 @@ class DatasetHandler:
             dataset = dataset.map(apply_chat_template, batched=True)
             return dataset
         
-        if "Llama" in self.model_name:
+        if "Llama" in self.model_name or "Qwen" in self.model_name or "mistral" in self.model_name:
             EOS_TOKEN = self.tokenizer.eos_token # Must add EOS_TOKEN
             def format_chat( example):
                 return {

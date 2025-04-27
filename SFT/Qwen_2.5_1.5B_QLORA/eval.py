@@ -122,18 +122,19 @@ def make_prompt(example):
 
 def main():
 
-    model_dir = "SFT/llama_3.2_1B_QLORA"
+    model_dir = "SFT/gemma_3_4B_QLORA"
+
     #create eval folder
     if not os.path.exists(f"{model_dir}/evaluation"):
         os.makedirs(f"{model_dir}/evaluation")
     config = Config(
-        model_name="unsloth/Llama-3.2-1B-Instruct-bnb-4bit",
+        model_name="unsloth/Qwen2.5-1.5B-Instruct-bnb-4bit",
         dataset_path="dataset/test_data.csv",
         output_dir=f"{model_dir}/output",
         dataset_split=0.2,
         chat_template="llama-3",
         dataset_text_field="text",
-        per_device_train_batch_size=8,
+        per_device_train_batch_size=4,
         gradient_accumulation_steps=4,
         warmup_steps=5,
         num_train_epochs=1,
@@ -149,9 +150,9 @@ def main():
     )
     if not args.inferenced_path:
         if args.eval_type == "finetune":
-            model_path = f"{model_dir}/output/unsloth/Llama-3.2-1B-Instruct-bnb-4bit_final"
+            model_path = f"{model_dir}/output/{config.model_name}_final"
         else:
-            model_path = f"unsloth/Llama-3.2-1B-Instruct-bnb-4bit"
+            model_path = config.model_name
         model, tokenizer = FastLanguageModel.from_pretrained(
             model_path,
             max_seq_length=8192,  # Choose any for long context!

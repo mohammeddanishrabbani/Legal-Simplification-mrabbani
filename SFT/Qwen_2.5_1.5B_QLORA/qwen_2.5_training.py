@@ -1,26 +1,35 @@
-from config import Config
-from dataset_handler import DatasetHandler
-from model_manager import ModelManager
-import trainer
+import time
+from SFT_trainer.config import Config
+from SFT_trainer.dataset_handler import DatasetHandler
+from SFT_trainer.model_manager import ModelManager
+import SFT_trainer.trainer
 from unsloth import FastModel
 import torch
 import logging
 from unsloth.chat_templates import train_on_responses_only
 logging.basicConfig(level=logging.INFO)
 
+import os
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
+logging.basicConfig(filename=f'logs/{__file__}_{time.time()}.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+
 
 
 def main():
     # Load the configuration
-    model_dir = "SFT/gemma_3_4B_QLORA"
+    model_dir = "SFT/Qwen_2.5_1.5B_QLORA"
+    # checkpoint_dir = f"{model_dir}/checkpoint-528"
+    checkpoint_dir = None
     config = Config(
-        model_name="unsloth/gemma-3-4b-it",
+        model_name="unsloth/Qwen2.5-1.5B-Instruct-bnb-4bit",
         dataset_path="dataset/train_data.csv",
         output_dir=f"{model_dir}/output",
         dataset_split=0.2,
-        chat_template="gemma-3",
+        chat_template="llama-3",
         dataset_text_field="text",
-        per_device_train_batch_size=1,
+        per_device_train_batch_size=4,
         gradient_accumulation_steps=4,
         warmup_steps=5,
         num_train_epochs=1,
@@ -41,13 +50,15 @@ def main():
     logging.info("Loading model...")
 
     model, tokenizer = FastModel.from_pretrained(
-    model_name = "unsloth/gemma-3-4b-it",
+    model_name = config.model_name,
     max_seq_length = 8192, # Choose any for long context!
     load_in_4bit = True,  # 4 bit quantization to reduce memory
     load_in_8bit = False, # [NEW!] A bit more accurate, uses 2x memory
     # full_finetuning = True, # [NEW!] We have full finetuning now!
     # token = "hf_...", # use one if using gated models
     )
+
+    model.save_pretrained(f"{model_dir}/output/{config.model_name}")
     model = FastModel.get_peft_model(
     model,
     finetune_vision_layers     = False, # Turn off for just text!
@@ -55,8 +66,8 @@ def main():
     finetune_attention_modules = True,  # Attention good for GRPO
     finetune_mlp_modules       = True,  # SHould leave on always!
 
-    r = 8,           # Larger = higher accuracy, but might overfit
-    lora_alpha = 8,  # Recommended alpha == r at least
+    r = 16,           # Larger = higher accuracy, but might overfit
+    lora_alpha = 16,  # Recommended alpha == r at least
     lora_dropout = 0,
     bias = "none",
     random_state = 3407,
@@ -66,8 +77,7 @@ def main():
     # # Load LoRA adapter weights
     # from peft import PeftModel
 
-    # checkpoint_dir = "trainer_output/checkpoint-528"
-    # # model = PeftModel.from_pretrained(model, checkpoint_dir)
+  
 
 
 
@@ -77,7 +87,7 @@ def main():
     dataset_handler = DatasetHandler(config, tokenizer, config.chat_template)
     
     # Load the dataset
-    train_dataset= dataset_handler.load_dataset()
+    train_dataset = dataset_handler.load_dataset()
     
 
     
@@ -86,17 +96,12 @@ def main():
 
     
     # GET TRAINING ARGS
-    args = trainer.get_trainer_args(config)
+    args = SFT_trainer.trainer.get_trainer_args(config)
     
     # Initialize the trainer
-    trainer_instance = trainer.get_trainer(model, tokenizer, train_dataset, args)
-    from unsloth.chat_templates import train_on_responses_only
-    trainer_instance = train_on_responses_only(trainer_instance,
-    instruction_part = "<start_of_turn>user\n",
-    response_part = "<start_of_turn>model\n",
-    )
+    trainer_instance = SFT_trainer.trainer.get_trainer(model, tokenizer, train_dataset, args)
+   
     # Train the model
-    checkpoint_dir = None
     try:
         if checkpoint_dir:
             trainer_instance.train(resume_from_checkpoint=checkpoint_dir)
@@ -106,7 +111,9 @@ def main():
         logging.error(f"Training failed: {e}")
         trainer_instance._save_checkpoint(model,None)
     # Save the model
-    model_manager.save_model()
+    model_manager.save_model(suffix="final")
+
+
     
 
 if __name__ == "__main__":

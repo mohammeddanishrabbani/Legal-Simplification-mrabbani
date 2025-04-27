@@ -122,7 +122,7 @@ def make_prompt(example):
 
 def main():
 
-    model_dir = "SFT/gemma_3_4B_QLORA"
+    model_dir = "SFT/Qwen_2.5_1.5B_QLORA"
 
     #create eval folder
     if not os.path.exists(f"{model_dir}/evaluation"):
@@ -184,16 +184,16 @@ def main():
 
         eval_dataset = val_dataset
         eval_dataset = eval_dataset.select(range(0, 100))
-        evaluation = Evaluation(model, tokenizer, dataset_handler)
+        evaluation = Evaluation()
         # Evaluate the model
-        eval_dataset = evaluation.evaluate(eval_dataset)
+        eval_dataset = evaluation.evaluate(eval_dataset, model, tokenizer)
         # Save the evaluation results
         eval_dataset.save_to_disk(f"{model_dir}/evaluation/eval_dataset_{args.eval_type}_{args.shots}_shots")
 
 
     # Load the evaluation dataset
     eval_dataset = load_from_disk(f"{model_dir}/evaluation/eval_dataset_{args.eval_type}_{args.shots}_shots")
-    evaluation = Evaluation(None, None, None)   
+    evaluation = Evaluation()   
     
     # Get the BERT score
     bert_score = evaluation.get_bert_score(eval_dataset)

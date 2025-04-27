@@ -1,0 +1,50 @@
+{
+  "builder_name": "csv",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "csv",
+  "dataset_size": 3474455,
+  "description": "",
+  "download_checksums": {
+    "/workspace/dataset/test_data.csv": {
+      "num_bytes": 3475682,
+      "checksum": null
+    }
+  },
+  "download_size": 3475682,
+  "features": {
+    "legal_text": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "simplified_text": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "prompt": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "prediction": {
+      "dtype": "string",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 6950137,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 3474455,
+      "num_examples": 1246,
+      "dataset_name": "csv"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}

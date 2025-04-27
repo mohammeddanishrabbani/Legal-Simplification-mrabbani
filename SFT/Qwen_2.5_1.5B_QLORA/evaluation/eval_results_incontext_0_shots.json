@@ -1,0 +1,19 @@
+{
+    "BERT Score": {
+        "average_precision": 0.7977739161252976,
+        "average_recall": 0.8513731908798218,
+        "average_f1": 0.8234693717956543
+    },
+    "ROUGE Score": {
+        "rouge1": 0.028154084832063338,
+        "rouge2": 0.008740279505964444,
+        "rougeL": 0.017904935658948923,
+        "rougeLsum": 0.025604871950214894
+    },
+    "SARI Score": {
+        "average_sari": 38.07081779652569
+    },
+    "Hallucination Score": {
+        "average_hallucination_score": 0.8438563294270459
+    }
+}

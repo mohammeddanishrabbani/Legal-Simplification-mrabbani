@@ -7,37 +7,75 @@ from transformers import AutoModelForSequenceClassification
 from tqdm import tqdm   
 import torch
 import numpy as np
+import gc
 
 class Evaluation:
-    def __init__(self, model, tokenizer, dataset_handler):
-        self.model = model
-        self.tokenizer = tokenizer
-        self.dataset_handler = dataset_handler
+    def __init__(self):
+        pass
+        # self.model, self.tokenizer = FastLanguageModel.from_pretrained(
+        #     model,
+        #     max_seq_length=8192,  # Choose any for long context!
+        #     load_in_4bit=True,  # 4 bit quantization to reduce memory
+        #     load_in_8bit=False,  # [NEW!] A bit more accurate, uses 2x memory
+        #     # full_finetuning = True, # [NEW!] We have full finetuning now!
+        #     # token = "hf_...", # use one if using gated models
+        # )
+        # self.dataset_handler = dataset_handler
         
-        self.text_streamer = TextStreamer(self.tokenizer)
+        # self.text_streamer = TextStreamer(self.tokenizer)
 
 
-    def simplyfy_text(self, example):
-        """
-        Simplify the input text using the model.
+    # def simplyfy_text(self, example):
+    #     """
+    #     Simplify the input text using the model.
         
-        Args:
-            text (str): The input text to be simplified.
+    #     Args:
+    #         text (str): The input text to be simplified.
         
-        Returns:
-            str: The simplified text.
-        """
+    #     Returns:
+    #         str: The simplified text.
+    #     """
     
-        prompt  = "{}"
-        inputs = self.tokenizer([prompt.format(example['prompt']),], return_tensors="pt").to(self.model.device)
-        input_ids = inputs["input_ids"]
-        input_length = input_ids.shape[1]
-        simplified_text = self.model.generate(**inputs, max_new_tokens = 8192, eos_token_id=self.tokenizer.eos_token_id)
-        simplified_text = simplified_text[:, input_length:]
-        simplified_text = self.tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
-        return {"prediction": simplified_text}
+    #     prompt  = "{}"
+    #     inputs = self.tokenizer([prompt.format(example['prompt']),], return_tensors="pt").to(self.model.device)
+    #     input_ids = inputs["input_ids"]
+    #     input_length = input_ids.shape[1]
+    #     breakpoint()
+    #     simplified_text = self.model.generate(**inputs, max_new_tokens = 1192, eos_token_id=self.tokenizer.eos_token_id)
+    #     simplified_text = simplified_text[:, input_length:]
+    #     simplified_text = self.tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
+    #     return {"prediction": simplified_text}
     
-    def evaluate(self, dataset):
+
+    # def simplyfy_text(self, example):
+    #     """
+    #     Simplify the input text using the model.
+        
+    #     Args:
+    #         text (str): The input text to be simplified.
+        
+    #     Returns:
+    #         str: The simplified text.
+    #     """
+    
+    #     prompt  = "{}"
+    #     breakpoint()
+    #     inputs = self.tokenizer([prompt.format(example['prompt']),], return_tensors="pt").to(self.model.device)
+    #     input_ids = inputs["input_ids"]
+    #     input_length = input_ids.shape[1]
+    #     simplified_text = self.model.generate(**inputs, max_new_tokens = 8192, eos_token_id=self.tokenizer.eos_token_id, use_cache=True)
+    #     simplified_text = simplified_text[:, input_length:]
+    #     simplified_text = self.tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
+    #     del inputs
+    #     del input_ids
+    #     del input_length
+    #     del simplified_text
+    #     gc.collect()
+    #     torch.cuda.empty_cache()
+    #     return {"prediction": simplified_text}
+    
+
+    def evaluate(self, dataset, model, tokenizer):
         """
         Evaluate the model on the given dataset.
         
@@ -47,10 +85,42 @@ class Evaluation:
         Returns:
             dict: The evaluation results.
         """
-        # Preprocess the dataset
-        FastLanguageModel.for_inference(self.model) # Enable native 2x faster inference
-        dataset = dataset.map(self.simplyfy_text)
+   
+        # def simplify_text(example):
+        #     """
+        #     Simplify the input text using the model.
+            
+        #     Args:
+        #         text (str): The input text to be simplified.
+            
+        #     Returns:
+        #         str: The simplified text.
+        #     """
         
+        #     prompt  = "{}"
+        #     inputs = tokenizer([prompt.format(example['prompt']),], return_tensors="pt").to(model.device)
+        #     input_ids = inputs["input_ids"]
+        #     input_length = input_ids.shape[1]
+        #     simplified_text = model.generate(**inputs, max_new_tokens = 8192, eos_token_id=tokenizer.eos_token_id, use_cache=True)
+        #     simplified_text = simplified_text[:, input_length:]
+        #     simplified_text = tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
+        #     example["prediction"] = simplified_text
+        #     return example
+        
+        # dataset = dataset.map(simplify_text)
+        data_list = dataset.to_list()
+        for example in tqdm(data_list):
+            prompt  = "{}"
+            inputs = tokenizer([prompt.format(example['prompt']),], return_tensors="pt").to(model.device)
+            input_ids = inputs["input_ids"]
+            input_length = input_ids.shape[1]
+            simplified_text = model.generate(**inputs, max_new_tokens = 8192, eos_token_id=tokenizer.eos_token_id, use_cache=True)
+            simplified_text = simplified_text[:, input_length:]
+            simplified_text = tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
+            example["prediction"] = simplified_text
+            
+        dataset = dataset.from_list(data_list)
+
         return dataset
     
 
@@ -155,16 +225,19 @@ class Evaluation:
         model.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
         model.eval()
         scores = []
-        for example in tqdm(eval_dataset):
-            # Get the reference and prediction texts
-            reference = example["simplified_text"]
-            prediction = example["prediction"]
-            if prediction == "":
-                continue
+        try:
+            for example in tqdm(eval_dataset):
+                # Get the reference and prediction texts
+                reference = example["simplified_text"]
+                prediction = example["prediction"]
+                if prediction == "":
+                    continue
 
-            confidence = model.predict([(reference, prediction)])
+                confidence = model.predict([(reference, prediction)], )
 
-            scores.append(confidence.item())
+                scores.append(confidence.item())
+        except Exception as e:
+            print(f"Error in calculating hallucination score: {e}")
         avg_hallucination = sum(scores) / len(scores)
         return {
             "average_hallucination_score": float(avg_hallucination)

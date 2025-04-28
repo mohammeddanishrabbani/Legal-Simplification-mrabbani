@@ -1,19 +1,19 @@
 {
     "BERT Score": {
-        "average_precision": 0.9761922955513,
-        "average_recall": 0.9844974875450134,
-        "average_f1": 0.980327308177948
+        "average_precision": 0.9263583850860596,
+        "average_recall": 0.9318141287565231,
+        "average_f1": 0.9288746631145477
     },
     "ROUGE Score": {
-        "rouge1": 0.9908256880733944,
-        "rouge2": 0.9906542056074767,
-        "rougeL": 0.9908256880733944,
-        "rougeLsum": 0.9908256880733944
+        "rouge1": 0.7320048192936508,
+        "rouge2": 0.5725339726471297,
+        "rougeL": 0.6669399870974666,
+        "rougeLsum": 0.7007596563492184
     },
     "SARI Score": {
-        "average_sari": 97.47037558429774
+        "average_sari": 66.28934193358825
     },
     "Hallucination Score": {
-        "average_hallucination_score": 0.9191253781318665
+        "average_hallucination_score": 0.66443558935076
     }
 }

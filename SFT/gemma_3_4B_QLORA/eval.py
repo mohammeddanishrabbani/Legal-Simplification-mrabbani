@@ -38,14 +38,14 @@ def maka_one_shot_prompt(example):
             dict: The prompt for the model.
         """
         return {
-                    "prompt": f"""### Instruction:\nYou are an expert in legal language and its interpretation. 
+                    "prompt": f"""<bos><start_of_turn>user ### Instruction:\nYou are an expert in legal language and its interpretation. 
                     Your task is to simplify the following legal text while maintaining its original meaning and intent, so that a layman person can understand. 
                     The simplified version should be accessible to individuals without a legal background, using clear and concise language. 
                     Below is an example of a complex legal text that has been simplified by legal experts, so that a layman person can understand. Follow the given tips to simplify legal text:
                     ### Input:\n{raw_text[0]}
                     ### Output:\n{simplified_text[0]}
                     Now, please simplify the following legal text
-                    ### Input:\n{example['legal_text']}
+                    ### Input:\n{example['legal_text']}<end_of_turn>
                     """
                 }
     
@@ -60,7 +60,7 @@ def make_two_shot_prompt(example):
         dict: The prompt for the model.
     """
     return {
-                "prompt": f"""### Instruction:\nYou are an expert in legal language and its interpretation. 
+                "prompt": f"""<bos><start_of_turn>user ### Instruction:\nYou are an expert in legal language and its interpretation. 
                 Your task is to simplify the following legal text while maintaining its original meaning and intent, so that a layman person can understand. 
                 The simplified version should be accessible to individuals without a legal background, using clear and concise language. 
                 Below are two examples of complex legal text that have been simplified by legal experts, so that a layman person can understand. Follow the given tips to simplify legal text:
@@ -69,7 +69,7 @@ def make_two_shot_prompt(example):
                 ### Input:\n{raw_text[1]}
                 ### Output:\n{simplified_text[1]}
                 Now, please simplify the following legal text
-                ### Input:\n{example['legal_text']}
+                ### Input:\n{example['legal_text']} <end_of_turn>
                 """
             }
 
@@ -111,10 +111,10 @@ def make_prompt(example):
         dict: The prompt for the model.
     """
     return {
-                "prompt": f"""### Instruction:\nYou are an expert in legal language and its interpretation. 
+                "prompt": f"""<bos><start_of_turn>user ### Instruction:\nYou are an expert in legal language and its interpretation. 
                 Your task is to simplify the following legal text while maintaining its original meaning and intent, so that a layman person can understand. 
                 The simplified version should be accessible to individuals without a legal background, using clear and concise language. 
-                ### Input:\n{example['legal_text']}
+                ### Input:\n{example['legal_text']} <end_of_turn>
                 """
             }
 

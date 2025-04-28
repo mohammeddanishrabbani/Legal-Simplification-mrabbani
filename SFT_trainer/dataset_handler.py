@@ -43,8 +43,20 @@ class DatasetHandler:
             dataset = dataset.map(self.format_chat)
             dataset = dataset.map(apply_chat_template, batched=True)
             return dataset
-        
-        if "Llama" in self.model_name or "Qwen" in self.model_name or "mistral" in self.model_name:
+        if "Qwen" in self.model_name:
+            def format_chat( example):
+                return {
+                    "text": f"""<|im_start|>system ### Instruction:\nYou are an expert in legal language and its interpretation. <|im_end|>
+                    <|im_start|>user Your task is to simplify the following legal text while maintaining its original meaning and intent, so that a layman person can understand. 
+                    The simplified version should be accessible to individuals without a legal background, using clear and concise language. 
+                    ### Input:\n{example['legal_text']}
+                    ### Response:\n {example["simplified_text"]} <|im_end|>
+                    """
+                }
+
+            dataset = dataset.map(format_chat)
+            return dataset
+        if "Llama" in self.model_name  or "mistral" in self.model_name:
             EOS_TOKEN = self.tokenizer.eos_token # Must add EOS_TOKEN
             def format_chat( example):
                 return {

@@ -108,13 +108,14 @@ class Evaluation:
         #     return example
         
         # dataset = dataset.map(simplify_text)
+        FastLanguageModel.for_inference(model)
         data_list = dataset.to_list()
         for example in tqdm(data_list):
             prompt  = "{}"
             inputs = tokenizer([prompt.format(example['prompt']),], return_tensors="pt").to(model.device)
             input_ids = inputs["input_ids"]
             input_length = input_ids.shape[1]
-            simplified_text = model.generate(**inputs, max_new_tokens = 8192, eos_token_id=tokenizer.eos_token_id, use_cache=True)
+            simplified_text = model.generate(**inputs, max_new_tokens = 8192, eos_token_id=tokenizer.eos_token_id)
             simplified_text = simplified_text[:, input_length:]
             simplified_text = tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
             example["prediction"] = simplified_text
@@ -228,7 +229,7 @@ class Evaluation:
         try:
             for example in tqdm(eval_dataset):
                 # Get the reference and prediction texts
-                reference = example["simplified_text"]
+                reference = example["prompt"]
                 prediction = example["prediction"]
                 if prediction == "":
                     continue

@@ -30,7 +30,7 @@ def main():
         chat_template="llama-3",
         dataset_text_field="text",
         per_device_train_batch_size=4,
-        gradient_accumulation_steps=4,
+        gradient_accumulation_steps=1,
         warmup_steps=5,
         num_train_epochs=1,
         learning_rate=2e-4,
@@ -94,7 +94,8 @@ def main():
     # Preprocess the datasets
     train_dataset = dataset_handler.preprocess_dataset(train_dataset)
 
-    
+    breakpoint()
+    del dataset_handler
     # GET TRAINING ARGS
     args = SFT_trainer.trainer.get_trainer_args(config)
     

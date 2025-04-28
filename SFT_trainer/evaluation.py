@@ -229,7 +229,7 @@ class Evaluation:
         try:
             for example in tqdm(eval_dataset):
                 # Get the reference and prediction texts
-                reference = example["prompt"]
+                reference = example["simplified_text"]
                 prediction = example["prediction"]
                 if prediction == "":
                     continue

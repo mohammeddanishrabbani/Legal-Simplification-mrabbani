@@ -13,3 +13,5 @@ SFT/gemma_3_4B_QLORA/trainer_output/*
 SFT/Qwen_2.5_1.5B_QLORA/output/*
 
 SFT/mistral_7B_QLORA/output/*
+SFT/QWEN-2.5_7B_QLORA/output/*
+SFT/llama_3.2_3B_QLORA/output/*

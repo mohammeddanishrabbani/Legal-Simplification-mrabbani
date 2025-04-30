@@ -43,7 +43,9 @@ class DatasetHandler:
             dataset = dataset.map(self.format_chat)
             dataset = dataset.map(apply_chat_template, batched=True)
             return dataset
+
         if "Qwen" in self.model_name:
+            EOS_TOKEN = self.tokenizer.eos_token # Must add
             def format_chat( example):
                 return {
                     "text": f"""<|im_start|>system ### Instruction:\nYou are an expert in legal language and its interpretation. <|im_end|>
@@ -51,6 +53,7 @@ class DatasetHandler:
                     The simplified version should be accessible to individuals without a legal background, using clear and concise language. 
                     ### Input:\n{example['legal_text']}
                     ### Response:\n {example["simplified_text"]} <|im_end|>
+                    {EOS_TOKEN}
                     """
                 }
 

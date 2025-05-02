@@ -101,7 +101,7 @@ class Evaluation:
         #     inputs = tokenizer([prompt.format(example['prompt']),], return_tensors="pt").to(model.device)
         #     input_ids = inputs["input_ids"]
         #     input_length = input_ids.shape[1]
-        #     simplified_text = model.generate(**inputs, max_new_tokens = 8192, eos_token_id=tokenizer.eos_token_id, use_cache=True)
+        #     simplified_text = model.generate(**inputs, max_new_tokens = 8192, eos_token_id=tokenizer.eos_token_id, top_p=0.95, top_k=50)
         #     simplified_text = simplified_text[:, input_length:]
         #     simplified_text = tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
         #     example["prediction"] = simplified_text
@@ -115,9 +115,17 @@ class Evaluation:
             inputs = tokenizer([prompt.format(example['prompt']),], return_tensors="pt").to(model.device)
             input_ids = inputs["input_ids"]
             input_length = input_ids.shape[1]
-            simplified_text = model.generate(**inputs, max_new_tokens = 8192, eos_token_id=tokenizer.eos_token_id)
+            simplified_text = model.generate(**inputs, 
+                                             max_new_tokens = 8192, 
+                                             eos_token_id=tokenizer.eos_token_id, 
+                                             temperature=0.7,
+                                             top_k=50,
+                                             top_p=0.9,
+                                            repetition_penalty=1.2,
+                                            no_repeat_ngram_size=3)
             simplified_text = simplified_text[:, input_length:]
             simplified_text = tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
+            print(simplified_text)
             example["prediction"] = simplified_text
             
         dataset = dataset.from_list(data_list)
@@ -226,6 +234,7 @@ class Evaluation:
         model.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
         model.eval()
         scores = []
+
         try:
             for example in tqdm(eval_dataset):
                 # Get the reference and prediction texts

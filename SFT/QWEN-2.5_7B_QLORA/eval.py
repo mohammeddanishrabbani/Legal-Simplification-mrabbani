@@ -111,10 +111,10 @@ def make_prompt(example):
         dict: The prompt for the model.
     """
     return {
-                "prompt": f"""<|im_start|>system ### Instruction:\nYou are an expert in legal language and its interpretation. <|im_end|>
-                <|im_start|>user Your task is to simplify the following legal text while maintaining its original meaning and intent, so that a layman person can understand. 
+                "prompt": f"""<|im_start|>system\n### Instruction:\nYou are an expert in legal language and its interpretation. <|im_end|>
+                <|im_start|>user\n Your task is to simplify the following legal text while maintaining its original meaning and intent, so that a layman person can understand. 
                 The simplified version should be accessible to individuals without a legal background, using clear and concise language. 
-                ### Input:\n{example['legal_text']}<|im_end|>
+                ### Input:\n{example['legal_text']} <|im_end|>\n<|im_start|>assistant
                 """
             }
 
@@ -156,7 +156,7 @@ def main():
         model, tokenizer = FastLanguageModel.from_pretrained(
             model_path,
             max_seq_length=8192,  # Choose any for long context!
-            load_in_4bit=True,  # 4 bit quantization to reduce memory
+            load_in_4bit=False,  # 4 bit quantization to reduce memory
             load_in_8bit=False,  # [NEW!] A bit more accurate, uses 2x memory
             # full_finetuning = True, # [NEW!] We have full finetuning now!
             # token = "hf_...", # use one if using gated models

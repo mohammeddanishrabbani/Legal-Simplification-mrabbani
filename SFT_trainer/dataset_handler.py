@@ -4,14 +4,16 @@ from unsloth.chat_templates import get_chat_template
 
 
 class DatasetHandler:
-    def __init__(self, config: Config, tokenizer, chat_template):
+    def __init__(self, config: Config, tokenizer, chat_template=None):
         self.dataset_path = config.dataset_path
         self.model_name = config.model_name
         self.output_dir = config.output_dir
         self.dataset = None
         self.dataset_split = config.dataset_split
-        self.tokenizer = get_chat_template(tokenizer, chat_template=chat_template)
-
+        if chat_template is not None:
+            self.tokenizer = get_chat_template(tokenizer, chat_template=chat_template)
+        else:
+            self.tokenizer = tokenizer
     def load_dataset(self):
         # Load the dataset
         self.dataset = load_dataset("csv", data_files=self.dataset_path)['train']
@@ -35,6 +37,7 @@ class DatasetHandler:
             ]
         }
     def preprocess_dataset(self, dataset):
+        
         if "gemma" in self.model_name:
             
             def apply_chat_template(examples):
@@ -44,7 +47,7 @@ class DatasetHandler:
             dataset = dataset.map(apply_chat_template, batched=True)
             return dataset
 
-        if "Qwen" in self.model_name:
+        elif "Qwen" in self.model_name:
             EOS_TOKEN = self.tokenizer.eos_token # Must add
             def format_chat( example):
                 return {
@@ -59,7 +62,7 @@ class DatasetHandler:
 
             dataset = dataset.map(format_chat)
             return dataset
-        if "Llama" in self.model_name  or "mistral" in self.model_name:
+        else:
             EOS_TOKEN = self.tokenizer.eos_token # Must add EOS_TOKEN
             def format_chat( example):
                 return {

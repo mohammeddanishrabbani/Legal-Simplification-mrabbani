@@ -3,10 +3,11 @@ from SFT_trainer.config import Config
 from SFT_trainer.dataset_handler import DatasetHandler
 from SFT_trainer.model_manager import ModelManager
 import SFT_trainer.trainer
-from unsloth import FastModel
+
 import torch
 import logging
-from unsloth.chat_templates import train_on_responses_only
+
+from transformers import AutoTokenizer, EncoderDecoderModel
 logging.basicConfig(level=logging.INFO)
 
 import os
@@ -19,11 +20,11 @@ logging.basicConfig(filename=f'logs/{__file__}_{time.time()}.log', level=logging
 
 def main():
     # Load the configuration
-    model_dir = "SFT/llama_3.2_3B_QLORA"
+    model_dir = "SFT/legal_bert_plus_gpt2"
     # checkpoint_dir = f"{model_dir}/checkpoint-528"
     checkpoint_dir = None
     config = Config(
-        model_name="unsloth/Llama-3.2-3B",
+        model_name="Legal_bert_plus_gpt2",
         dataset_path="dataset/train_data.csv",
         output_dir=f"{model_dir}/output",
         dataset_split=0.2,
@@ -44,75 +45,43 @@ def main():
         # deepspeed="ds_config.json",
     )
     
+    encoder_model = "nlpaueb/legal-bert-base-uncased"
+    decoder_model = "gpt2"  # You can use t5-small if preferred
 
+    # Load the tokenizer
+    tokenizer_encoder = AutoTokenizer.from_pretrained(encoder_model)
+    tokenizer_decoder = AutoTokenizer.from_pretrained(decoder_model)
+    tokenizer_decoder.pad_token = tokenizer_decoder.eos_token
+    model = EncoderDecoderModel.from_encoder_decoder_pretrained(encoder_model, decoder_model)
     
-    # Initialize the model manager
-    logging.info("Loading model...")
+    dataset_handler = DatasetHandler(config, tokenizer_decoder)
 
-    model, tokenizer = FastModel.from_pretrained(
-    model_name = config.model_name,
-    max_seq_length = 8192, # Choose any for long context!
-    load_in_4bit = True,  # 4 bit quantization to reduce memory
-    load_in_8bit = False, # [NEW!] A bit more accurate, uses 2x memory
-    # full_finetuning = True, # [NEW!] We have full finetuning now!
-    # token = "hf_...", # use one if using gated models
-    )
-
-    # model.save_pretrained(f"{model_dir}/output/unsloth/Llama-3.2-1B-Instruct-bnb-4bit")
-    model = FastModel.get_peft_model(
-    model,
-    finetune_vision_layers     = False, # Turn off for just text!
-    finetune_language_layers   = True,  # Should leave on!
-    finetune_attention_modules = True,  # Attention good for GRPO
-    finetune_mlp_modules       = True,  # SHould leave on always!
-
-    r = 16,           # Larger = higher accuracy, but might overfit
-    lora_alpha = 16,  # Recommended alpha == r at least
-    lora_dropout = 0,
-    bias = "none",
-    random_state = 3407,
-    use_gradient_checkpointing = True,
-
-    )   
-    # # Load LoRA adapter weights
-    # from peft import PeftModel
-
-  
-
-
-
-    model_manager = ModelManager(model, tokenizer, config)
-
-    # Initialize the dataset handler
-    dataset_handler = DatasetHandler(config, tokenizer, config.chat_template)
-    
     # Load the dataset
-    train_dataset = dataset_handler.load_dataset()
-    
-
-    
-    # Preprocess the datasets
-    train_dataset = dataset_handler.preprocess_dataset(train_dataset)
-
+    dataset = dataset_handler.load_dataset()
+    # Preprocess the dataset
+    dataset = dataset_handler.preprocess_dataset(dataset)
     del dataset_handler
-    # GET TRAINING ARGS
+
     args = SFT_trainer.trainer.get_trainer_args(config)
-    
-    # Initialize the trainer
-    trainer_instance = SFT_trainer.trainer.get_trainer(model, tokenizer, train_dataset, args)
-   
-    # Train the model
+
+    trainer_instance = SFT_trainer.trainer.get_trainer(model, tokenizer_decoder, dataset, args)
+
     try:
         if checkpoint_dir:
             trainer_instance.train(resume_from_checkpoint=checkpoint_dir)
         else:
             trainer_instance.train()
     except Exception as e:
-        logging.error(f"Training failed: {e}")
+        logging.error(f"Error during training: {e}")
         trainer_instance._save_checkpoint(model,None)
-    # Save the model
-    model_manager.save_model(suffix="final")
+    model.save_pretrained(f"{config.output_dir}/{config.model_name}_final")
+    tokenizer_decoder.save_pretrained(f"{config.output_dir}/{config.model_name}_final")
 
+
+
+
+
+    
 
     
 

@@ -1,9 +1,8 @@
 import time
 from SFT_trainer.config import Config
 from SFT_trainer.dataset_handler import DatasetHandler
-from SFT_trainer.model_manager import ModelManager
-import SFT_trainer.trainer
 
+from transformers import TrainingArguments, Trainer
 import torch
 import logging
 
@@ -46,25 +45,54 @@ def main():
     )
     
     encoder_model = "nlpaueb/legal-bert-base-uncased"
-    decoder_model = "gpt2"  # You can use t5-small if preferred
+    decoder_model = "gpt2-medium" 
 
     # Load the tokenizer
     tokenizer_encoder = AutoTokenizer.from_pretrained(encoder_model)
     tokenizer_decoder = AutoTokenizer.from_pretrained(decoder_model)
     tokenizer_decoder.pad_token = tokenizer_decoder.eos_token
     model = EncoderDecoderModel.from_encoder_decoder_pretrained(encoder_model, decoder_model)
-    
+    model.config.decoder_start_token_id = tokenizer_decoder.bos_token_id
+    model.config.pad_token_id = tokenizer_decoder.pad_token_id
+    model.config.vocab_size = model.config.decoder.vocab_size
     dataset_handler = DatasetHandler(config, tokenizer_decoder)
 
     # Load the dataset
     dataset = dataset_handler.load_dataset()
     # Preprocess the dataset
-    dataset = dataset_handler.preprocess_dataset(dataset)
+    def preprocess(example):
+        inputs = tokenizer_encoder(example["legal_text"], truncation=True, padding="max_length", max_length=512)
+        targets = tokenizer_decoder(example["simplified_text"], truncation=True, padding="max_length", max_length=1024)
+        return {
+            "input_ids": inputs["input_ids"],
+            "attention_mask": inputs["attention_mask"],
+            "labels": targets["input_ids"]
+        }
+    dataset = dataset.map(preprocess)
+    dataset = dataset.remove_columns(['legal_text', 'simplified_text'])
     del dataset_handler
+    args = TrainingArguments(
+                                output_dir=f"{model_dir}/output",
+                                per_device_train_batch_size=1,
+                                num_train_epochs=1,
+                                save_strategy="steps",
+                                save_steps=100,
+                                logging_dir="./logs",
+                                logging_steps=100,
+                                warmup_steps=500,
+                                weight_decay=0.01,
+                                fp16=True,  # if using a GPU
+                                )
+    # Initialize the Trainer
+    trainer_instance = Trainer(
+        model=model,
+        args=args,
+        train_dataset=dataset,
+        eval_dataset=None,
+        tokenizer=tokenizer_decoder,
+    )
 
-    args = SFT_trainer.trainer.get_trainer_args(config)
-
-    trainer_instance = SFT_trainer.trainer.get_trainer(model, tokenizer_decoder, dataset, args)
+    
 
     try:
         if checkpoint_dir:
@@ -73,7 +101,9 @@ def main():
             trainer_instance.train()
     except Exception as e:
         logging.error(f"Error during training: {e}")
-        trainer_instance._save_checkpoint(model,None)
+        model.save_pretrained(f"{config.output_dir}/{config.model_name}_checkpoint")
+        tokenizer_decoder.save_pretrained(f"{config.output_dir}/{config.model_name}_checkpoint")
+    
     model.save_pretrained(f"{config.output_dir}/{config.model_name}_final")
     tokenizer_decoder.save_pretrained(f"{config.output_dir}/{config.model_name}_final")
 

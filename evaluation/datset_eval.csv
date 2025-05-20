@@ -1,0 +1,116 @@
+legal_text,simplified_text,nli_label,entailment_confidence,fluency_errors,flesch_reading_ease,flesch_kincaid_grade,smog_index,dale_chall_score,hallucination_score
+"On and after the appointed day the Trust shall be responsible for the management of the Common.
+Without prejudice to the generality of subsection (1), the Trust may―
+(a) do any works necessary for preserving, restoring, planting and maintaining the turf, trees, shrubs, plants and grass for landscaping and temporarily fence off such parts of the Common as it thinks
+necessary;
+(b) execute works of draining, raising or levelling for the preservation
+and maintenance of the Common and fence off dangerous places;
+(c) construct, place or erect and maintain, or permit the construction, placing or erection and maintenance of buildings, seats, fences, notice
+boards, gates and other structures.","Responsibilities of the Trust: After a certain date, the Trust will be in charge of managing the Common. 
+Specific Powers of the Trust: The Trust has the authority to perform various actions for the upkeep and preservation of the Common, including carrying out necessary works, construction, and maintenance of various elements within the Common.",entailment,0.7376710772514343,0,27.15,16.2,0.0,10.53,0.9474407434463501
+"Subject to subsection (5), the only purposes for which fences may be erected under subsection (2) are
+(a) the conservation, protection and improvement of the physical and natural environment of the Common and its suitability for recreation;
+(b) the preservation of trees on the Common;
+(c) the prevention of the risk of fire on the Common;
+(d) the prevention of accidents or injury or other damage to health at any place, which is in the opinion of the Trust a source of danger, on the Common;
+(e) any other purpose necessary, in the reasonable opinion of the Trust, for the furtherance of the primary objects.","Restrictions on Erecting Fences: Only certain purposes are allowed for putting up fences, unless subsection (5) says otherwise. These purposes are:
+
+Conservation and Recreation: To protect and enhance the natural and physical environment of the Common and make it suitable for recreational activities.
+Tree Preservation: To safeguard the trees on the Common.
+Fire Prevention: To minimize the risk of fires on the Common.
+Safety: To prevent accidents, injuries, or health risks in areas that the Trust considers dangerous on the Common.
+Other Necessary Purposes: For any other reasons that the Trust believes are essential for achieving its main goals.",entailment,0.46221688389778137,0,37.81,12.1,15.0,10.52,0.897753894329071
+"On and after the appointed day the Trust may, over any part of the Common, grant to an owner or occupier of any land adjoining the Common easements, licences or other rights for access (with or without vehicles), maintenance or services to or in connection with the land as the Trust thinks fit.
+Easements, licences or other rights may be granted on such terms (including the payment of charges, whether periodic or otherwise) and subject to such conditions as the Trust thinks fit.
+Nothing in this Act affects any rights of owners and occupiers of land adjoining the Common in respect of gates, ways or passages lawfully erected or used before the appointed day.
+Nothing in this section affects the application of sections 117 to 123 of the Charities Act 2011 (restrictions on dispositions of land) in relation to the Trust.","Granting Rights to Land Adjacent to the Common: After a certain day, the Trust has the authority to give landowners or occupants next to the Common permissions, licenses, or other rights for access, maintenance, or services related to their land, as the Trust sees fit. These rights may include access with or without vehicles.
+Terms and Conditions: These rights can be granted with certain terms, such as payment of charges (either periodically or otherwise) and subject to specific conditions that the Trust finds appropriate.
+Existing Rights: Any existing rights of landowners and occupants regarding gates, ways, or passages that were lawfully established or used before the appointed day are not affected by this law.
+Charities Act: This law does not change how the Trust is subject to sections 117 to 123 of the Charities Act 2011, which deal with restrictions on land dispositions.",entailment,0.9534280300140381,0,42.45,14.4,17.1,9.47,0.7476402521133423
+"Whilst the Common is in its ownership―
+(a) the Trust must remain a charity;
+(b) the objects of the Trust must include the primary objects.
+From the appointed day the Churchwardens shall not be liable for any act, event, failure to act or omission so far as the act, event, failure to act or omission relates to the Common and occurred before the appointed day.
+Where the transfer and vesting of the Common or any part of the Common effected by subsection (1) is a registrable disposition under the Land Registration Act 2002, the Trust must apply to the Chief Land Registrar for registration in the register of title of a restriction to reflect section 12(2).","While the Common is owned by the Trust:
+The Trust must continue to operate as a charity.
+The Trust's mission must include the main objectives.
+
+From the appointed day, the Churchwardens will not be responsible for any actions, events, failures to act, or omissions related to the Common that occurred before the appointed day.
+
+If the transfer of the Common or any part of it is a registrable transaction under the Land Registration Act 2002, the Trust must request the Chief Land Registrar to register a restriction in the title register to reflect section 12(2).",entailment,0.7491704225540161,0,47.32,12.6,14.9,10.14,0.9290559887886047
+"Whilst the Common is in its ownership―
+(a) the Trust must remain a charity;
+(b) the objects of the Trust must include the primary objects.
+From the appointed day the Churchwardens shall not be liable for any act, event, failure to act or omission so far as the act, event, failure to act or omission relates to the Common and occurred before the appointed day.
+Where the transfer and vesting of the Common or any part of the Common effected by subsection (1) is a registrable disposition under the Land Registration Act 2002, the Trust must apply to the Chief Land Registrar for registration in the register of title of a restriction to reflect section 12(2).","While the Common is owned by the Trust:
+The Trust must continue to operate as a charity.
+The Trust's mission must include the main objectives.
+
+From the appointed day, the Churchwardens will not be responsible for any actions, events, failures to act, or omissions related to the Common that occurred before the appointed day.
+
+If the transfer of the Common or any part of it is a registrable transaction under the Land Registration Act 2002, the Trust must request the Chief Land Registrar to register a restriction in the title register to reflect section 12(2).",entailment,0.7491704225540161,0,47.32,12.6,14.9,10.14,0.9290559887886047
+"Agreements with highway authorities and traffic authorities
+(1) The Corporation may enter into an agreement with a highway authority or
+traffic authority about the exercise of their respective functions as they relate to
+an open space.
+(2) An agreement under subsection (1) may include agreement for―
+(a) the provision, installation or maintenance of signs, fences, gates, cattle-
+grids, road-humps, traffic-calming works, or any other works or
+equipment;
+(b) the restriction or regulation of traffic; or
+(c) the making, or dedication to the public, of a road or path.
+(3) In exercising the power in subsection (1), the Corporation must have regard to
+the amenity of the open space and the interests of persons resorting to it, and
+to the interests of inhabitants of the locality of the open space and other persons
+using the highways in that locality.","Agreements with Authorities Regarding Open Spaces:
+The Corporation has the authority to make agreements with highway authorities or traffic authorities concerning the management of their respective responsibilities related to an open space.
+These agreements may involve:
+- Providing, installing, or maintaining signs, fences, gates, cattle-grids, road-humps, traffic-calming works, or any other works or equipment.
+- Regulating or restricting traffic.
+- Creating or dedicating a road or path to the public.
+When exercising this power, the Corporation must consider the well-being of the open space, the needs of individuals who use it, and the interests of local residents and others who utilize the local highways.",entailment,0.7576926946640015,0,17.13,15.9,17.4,10.58,0.9707674384117126
+"On and after the appointed day the Trust may, over any part of the Common, grant to an owner or occupier of any land adjoining the Common easements, licences or other rights for access (with or without vehicles), maintenance or services to or in connection with the land as the Trust thinks fit.
+Easements, licences or other rights may be granted on such terms (including the payment of charges, whether periodic or otherwise) and subject to such conditions as the Trust thinks fit.
+Nothing in this Act affects any rights of owners and occupiers of land adjoining the Common in respect of gates, ways or passages lawfully erected or used before the appointed day.
+Nothing in this section affects the application of sections 117 to 123 of the Charities Act 2011 (restrictions on dispositions of land) in relation to the Trust.","Granting Rights to Land Adjacent to the Common: After a certain day, the Trust has the authority to give landowners or occupants next to the Common permissions, licenses, or other rights for access, maintenance, or services related to their land, as the Trust sees fit. These rights may include access with or without vehicles.
+Terms and Conditions: These rights can be granted with certain terms, such as payment of charges (either periodically or otherwise) and subject to specific conditions that the Trust finds appropriate.
+Existing Rights: Any existing rights of landowners and occupants regarding gates, ways, or passages that were lawfully established or used before the appointed day are not affected by this law.
+Charities Act: This law does not change how the Trust is subject to sections 117 to 123 of the Charities Act 2011, which deal with restrictions on land dispositions.",entailment,0.9534280300140381,0,42.45,14.4,17.1,9.47,0.7476402521133423
+"Agreements with highway authorities and traffic authorities
+(1) The Corporation may enter into an agreement with a highway authority or
+traffic authority about the exercise of their respective functions as they relate to
+an open space.
+(2) An agreement under subsection (1) may include agreement for―
+(a) the provision, installation or maintenance of signs, fences, gates, cattle-
+grids, road-humps, traffic-calming works, or any other works or
+equipment;
+(b) the restriction or regulation of traffic; or
+(c) the making, or dedication to the public, of a road or path.
+(3) In exercising the power in subsection (1), the Corporation must have regard to
+the amenity of the open space and the interests of persons resorting to it, and
+to the interests of inhabitants of the locality of the open space and other persons
+using the highways in that locality.","Agreements with Authorities Regarding Open Spaces:
+The Corporation has the authority to make agreements with highway authorities or traffic authorities concerning the management of their respective responsibilities related to an open space.
+These agreements may involve:
+- Providing, installing, or maintaining signs, fences, gates, cattle-grids, road-humps, traffic-calming works, or any other works or equipment.
+- Regulating or restricting traffic.
+- Creating or dedicating a road or path to the public.
+When exercising this power, the Corporation must consider the well-being of the open space, the needs of individuals who use it, and the interests of local residents and others who utilize the local highways.",entailment,0.7576926946640015,0,17.13,15.9,17.4,10.58,0.9707674384117126
+"On the appointed day―
+(a) the Common and all other property which immediately before that
+date was the property of the Churchwardens and was used or held in
+connection with the Common; and
+(b) all rights and liabilities of the Churchwardens subsisting immediately
+before that date which were acquired or incurred in connection with
+the Common, are transferred to and vest in the Trust free of any trusts established under the 1777 Act.","Transfer of Property and Rights: On the specified date:
+The property and all other assets that previously belonged to the Churchwardens and were used for or associated with the Common, as well as
+All the rights and obligations of the Churchwardens related to the Common before that date, are transferred to and become the responsibility of the Trust. This transfer is not subject to any obligations established under the 1777 Act.",entailment,0.8713289499282837,0,35.44,17.1,0.0,8.96,0.9276959300041199
+"On and after the appointed day the Trust shall be responsible for the management of the Common.
+Without prejudice to the generality of subsection (1), the Trust may―
+(a) do any works necessary for preserving, restoring, planting and maintaining the turf, trees, shrubs, plants and grass for landscaping and temporarily fence off such parts of the Common as it thinks
+necessary;
+(b) execute works of draining, raising or levelling for the preservation
+and maintenance of the Common and fence off dangerous places;
+(c) construct, place or erect and maintain, or permit the construction, placing or erection and maintenance of buildings, seats, fences, notice
+boards, gates and other structures.","Responsibilities of the Trust: After a certain date, the Trust will be in charge of managing the Common. 
+Specific Powers of the Trust: The Trust has the authority to perform various actions for the upkeep and preservation of the Common, including carrying out necessary works, construction, and maintenance of various elements within the Common.",entailment,0.7376710772514343,0,27.15,16.2,0.0,10.53,0.9474407434463501

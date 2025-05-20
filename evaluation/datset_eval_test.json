@@ -1,0 +1,9 @@
+{
+    "average_entailment_confidence": 0.5727214922341182,
+    "average_fluency_errors": 1.0690208667736758,
+    "average_flesch_reading_ease": 31.946894060995184,
+    "average_flesch_kincaid_grade": 15.123274478330659,
+    "average_smog_index": 14.330096308186196,
+    "average_dale_chall_score": 9.65540128410915,
+    "average_hallucination_score": 0.6607285452611332
+}

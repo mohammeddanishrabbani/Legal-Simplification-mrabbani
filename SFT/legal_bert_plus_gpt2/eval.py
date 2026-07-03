@@ -8,7 +8,8 @@ import logging
 from SFT_trainer.evaluation import Evaluation
 from transformers import AutoTokenizer, EncoderDecoderModel
 logging.basicConfig(level=logging.INFO)
-
+from datasets import load_dataset
+from tqdm import tqdm
 import os
 if not os.path.exists('logs'):
     os.makedirs('logs')
@@ -16,25 +17,25 @@ if not os.path.exists('logs'):
 logging.basicConfig(filename=f'logs/{__file__}_{time.time()}.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 
 
-def evaluate(dataset):
+def evaluate(dataset, model,tokenizer):
     data_list = dataset.to_list()
-        for example in tqdm(data_list):
-            prompt  = "{}"
-            inputs = tokenizer([prompt.format(example['legal_text']),], return_tensors="pt").to(model.device)
-            input_ids = inputs["input_ids"]
-            input_length = input_ids.shape[1]
-            simplified_text = model.generate(**inputs, 
-                                             max_new_tokens = 8192, 
-                                             eos_token_id=tokenizer.eos_token_id, 
-                                             temperature=0.7,
-                                             top_k=50,
-                                             top_p=0.9,
-                                            repetition_penalty=1.2,
-                                            no_repeat_ngram_size=3)
-            simplified_text = simplified_text[:, input_length:]
-            simplified_text = tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
-            print(simplified_text)
-            example["prediction"] = simplified_text
+    for example in tqdm(data_list):
+        prompt  = "{}"
+        inputs = tokenizer(example['legal_text'], return_tensors="pt",truncation=True, padding="max_length", max_length=512).to(model.device)
+        input_ids = inputs["input_ids"]
+        input_length = input_ids.shape[1]
+        simplified_text = model.generate(**inputs, 
+                                            max_new_tokens = 8192, 
+                                            eos_token_id=tokenizer.eos_token_id, 
+                                            temperature=0.7,
+                                            top_k=50,
+                                            top_p=0.9,
+                                        repetition_penalty=1.2,
+                                        no_repeat_ngram_size=3)
+        simplified_text = simplified_text[:, input_length:]
+        simplified_text = tokenizer.decode(simplified_text[0], skip_special_tokens=True).strip()
+        print(simplified_text)
+        example["prediction"] = simplified_text
             
         dataset = dataset.from_list(data_list)
 
@@ -53,8 +54,8 @@ def main():
 
     dataset = load_dataset("csv", data_files=val_dataset)['train']
 
-    dataset = dataset.select(range(100))
-    eval_dataset = evaluate(dataset)
+    dataset = dataset.select(range(1))
+    eval_dataset = evaluate(dataset, model, tokenizer_encoder)
     evaluation = Evaluation()   
     
     # Get the BERT score

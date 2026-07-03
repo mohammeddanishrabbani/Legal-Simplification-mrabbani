@@ -1,5 +1,5 @@
 from datasets import load_dataset
-from config import Config
+from .config import Config
 from unsloth.chat_templates import get_chat_template
 
 

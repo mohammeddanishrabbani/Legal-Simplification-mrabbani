@@ -29,8 +29,8 @@ def main():
         dataset_split=0.2,
         chat_template="llama-3",
         dataset_text_field="text",
-        per_device_train_batch_size=8,
-        gradient_accumulation_steps=4,
+        per_device_train_batch_size=4,
+        gradient_accumulation_steps=1,
         warmup_steps=5,
         num_train_epochs=1,
         learning_rate=2e-4,
@@ -58,7 +58,7 @@ def main():
     # token = "hf_...", # use one if using gated models
     )
 
-    model.save_pretrained(f"{model_dir}/output/unsloth/Llama-3.2-1B-Instruct-bnb-4bit")
+    # model.save_pretrained(f"{model_dir}/output/unsloth/Llama-3.2-1B-Instruct-bnb-4bit")
     model = FastModel.get_peft_model(
     model,
     finetune_vision_layers     = False, # Turn off for just text!

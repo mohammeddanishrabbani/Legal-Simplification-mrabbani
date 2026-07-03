@@ -1,4 +1,4 @@
-from dataset_handler import DatasetHandler
+from SFT_trainer.dataset_handler import DatasetHandler
 from unsloth import FastLanguageModel
 import evaluate
 from transformers import TextStreamer

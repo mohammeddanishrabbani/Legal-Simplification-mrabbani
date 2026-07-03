@@ -52,6 +52,7 @@ RUN pip3 install --no-cache-dir \
 RUN pip3 install --no-cache-dir \
     transformers datasets accelerate unsloth \
     evaluate bert_score sacremoses sacrebleu rouge_score
+RUN pip install unsloth vllm
 
 RUN export PYTHONPATH=SFT_trainer:$PYTHONPATH
 WORKDIR /workspace

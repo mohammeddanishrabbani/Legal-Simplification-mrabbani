@@ -1,0 +1,21 @@
+class Config:
+    def __init__(self, model_name, dataset_path, output_dir, dataset_split, chat_template, dataset_text_field, per_device_train_batch_size, gradient_accumulation_steps, warmup_steps, num_train_epochs, learning_rate, logging_steps, optim, weight_decay, lr_scheduler_type, seed, report_to, packing, deepspeed=None):
+        self.dataset_text_field = dataset_text_field
+        self.per_device_train_batch_size = per_device_train_batch_size
+        self.gradient_accumulation_steps = gradient_accumulation_steps
+        self.warmup_steps = warmup_steps
+        self.num_train_epochs = num_train_epochs
+        self.learning_rate = learning_rate
+        self.logging_steps = logging_steps
+        self.optim = optim
+        self.weight_decay = weight_decay
+        self.lr_scheduler_type = lr_scheduler_type
+        self.seed = seed
+        self.report_to = report_to
+        self.packing = packing
+        self.model_name = model_name
+        self.dataset_path = dataset_path
+        self.output_dir = output_dir
+        self.dataset_split = dataset_split
+        self.chat_template = chat_template
+        self.deepspeed = deepspeed

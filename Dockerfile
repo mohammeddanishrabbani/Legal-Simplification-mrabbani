@@ -54,5 +54,5 @@ RUN pip3 install --no-cache-dir \
     evaluate bert_score sacremoses sacrebleu rouge_score
 RUN pip install unsloth vllm
 
-RUN export PYTHONPATH=SFT_trainer:$PYTHONPATH
+RUN export PYTHONPATH=src:$PYTHONPATH
 WORKDIR /workspace

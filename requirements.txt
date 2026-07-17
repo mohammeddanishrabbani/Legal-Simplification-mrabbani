@@ -1,0 +1,17 @@
+torch>=2.0.0
+torchvision
+torchaudio
+transformers>=4.35.0
+datasets
+accelerate
+unsloth
+evaluate
+bert_score
+sacremoses
+sacrebleu
+rouge_score
+pandas
+numpy
+tqdm
+textstat
+language-tool-python

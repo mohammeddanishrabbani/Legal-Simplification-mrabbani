@@ -1,19 +1,34 @@
-SFT/unsloth_compiled_cache/*
-unsloth_training_checkpoints/*
-unsloth_training_logs/*
-unsloth_training_results/*
+# Python
 *.pyc
-unsloth_compiled_cache/*
-.vscode
+__pycache__/
+*.egg-info/
 
+# IDE
+.vscode/
+.idea/
 
-SFT/gemma_3_4B_QLORA/output/*
-SFT/llama_3.2_1B_QLORA/output/*
-SFT/gemma_3_4B_QLORA/trainer_output/*
-SFT/Qwen_2.5_1.5B_QLORA/output/*
+# Jupyter
+.ipynb_checkpoints/
 
-SFT/mistral_7B_QLORA/output/*
-SFT/QWEN-2.5_7B_QLORA/output/*
-SFT/llama_3.2_3B_QLORA/output/*
-SFT/legal_bert_plus_gpt2/output/*
+# Logs
+logs/
+wandb/
+runs/
 
+# Large data files (generate using notebooks in scripts/dataset_creation/)
+data/raw/
+
+# Model checkpoints and outputs
+checkpoints/
+output/
+trainer_output/
+
+# Compiled cache
+unsloth_compiled_cache/
+
+# Arrow dataset files
+*.arrow
+
+# OS files
+.DS_Store
+Thumbs.db
